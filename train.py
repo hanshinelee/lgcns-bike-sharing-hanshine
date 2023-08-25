@@ -34,11 +34,11 @@ warnings.filterwarnings(action="ignore")
 if __name__ == "__main__":
     train_df = pd.read_csv(os.path.join(DATA_PATH, "bike_sharing_train.csv"))
 
-    _X = train_df.drop(["windspeed"], axis=1)
+    _X = train_df.drop(["datetime"], axis=1)
     y = np.log1p(train_df["count"])
 
     # X=_X, y=y로 전처리 파이프라인을 적용해 X에 저장
-    X = preprocess_pipeline.fit_transform(X=_X, y=y)
+    X = _X
 
     # Data storage - 피처 데이터 저장
     if not os.path.exists(os.path.join(DATA_PATH, "storage")):
@@ -50,9 +50,9 @@ if __name__ == "__main__":
     )
 
     params_candidates = {
-        "learning_rate": [0.01, 0.05, 0.1],
-        "max_depth": [3, 4, 5, 6],
-        "max_features": [1.0, 0.9, 0.8, 0.7],
+        "learning_rate": [0.01, 0.05],
+        "max_depth": [3, 4],
+        "max_features": [1.0, 0.9],
     }
 
     param_set = get_param_set(params=params_candidates)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
             # 전처리 이후 모델 순서로 파이프라인 작성
             pipeline = Pipeline(
                 # 전처리 파이프라인와 모델을 파이프라인으로 묶을 것
-                [("preprocessor", preprocess_pipeline), ("Regressor", regr)]
+                [("Regressor", regr)]
             )
             pipeline.fit(_X, y)
 
