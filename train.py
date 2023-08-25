@@ -32,10 +32,10 @@ warnings.filterwarnings(action="ignore")
 
 
 if __name__ == "__main__":
-    train_df = pd.read_csv(os.path.join(DATA_PATH, "house_rent_train.csv"))
+    train_df = pd.read_csv(os.path.join(DATA_PATH, "bike_sharing_train.csv"))
 
-    _X = train_df.drop(["rent", "area_locality", "posted_on"], axis=1)
-    y = np.log1p(train_df["rent"])
+    _X = train_df.drop(["windspeed"], axis=1)
+    y = np.log1p(train_df["count"])
 
     # X=_X, y=y로 전처리 파이프라인을 적용해 X에 저장
     X = preprocess_pipeline.fit_transform(X=_X, y=y)
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(DATA_PATH, "storage"))
     X.assign(rent=y).to_csv(
         # DATA_PATH 밑에 storage 폴더 밑에 피처 데이터를 저장
-        os.path.join(DATA_PATH, "storage", "house_rent_train_features.csv"),
+        os.path.join(DATA_PATH, "storage", "bike_sharing_train_features.csv"),
         index=False,
     )
 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     # BentoML에 모델 저장
     bentoml.sklearn.save_model(
-        name="house_rent",
+        name="bike_share",
         model=mlflow.sklearn.load_model(
             # 베스트 모델 URI
             best_model_uri
